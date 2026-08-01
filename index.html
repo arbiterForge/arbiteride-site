@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>arbiterIDE — the governed agentic IDE</title>
+<meta name="description" content="Intent in, gate-verified pull request out. An agentic IDE built on Eclipse Theia and governed by codeArbiter. In development.">
+<link rel="canonical" href="https://arbiteride.com/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="arbiterIDE — the governed agentic IDE">
+<meta property="og:description" content="Intent in, gate-verified pull request out. Built on Eclipse Theia, governed by codeArbiter.">
+<meta property="og:url" content="https://arbiteride.com/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23090d12'/%3E%3Cpath d='M12 11l-4 5 4 5' stroke='%23e3b341' stroke-width='2.2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M20 11l4 5-4 5' stroke='%23e3b341' stroke-width='2.2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#090d12; --panel:#121a24; --raised:#0e141c; --soft:#17212d;
+  --border:#22303f; --gold:#e3b341; --gold-dim:#d29922; --gold-low:#3b2e0a;
+  --ember:#d97757; --ink:#e9eef4; --muted:#8b95a2;
+  --sans:"Segoe UI Variable","Segoe UI",system-ui,-apple-system,"Helvetica Neue",sans-serif;
+  --mono:"Cascadia Code",Consolas,"SFMono-Regular",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans);
+  line-height:1.55; -webkit-font-smoothing:antialiased;
+  background-image:
+    radial-gradient(1100px 520px at 50% -220px, rgba(227,179,65,.10), transparent 70%),
+    radial-gradient(700px 400px at 12% 12%, rgba(217,119,87,.06), transparent 68%);
+  background-repeat:no-repeat;
+}
+.wrap{max-width:60rem;margin:0 auto;padding:clamp(2.5rem,7vw,5.5rem) clamp(1.15rem,4vw,2rem) 3.5rem}
+a{color:inherit}
+
+.mast{display:flex;align-items:center;gap:.6rem;margin-bottom:clamp(3rem,9vw,5rem)}
+.mark{width:30px;height:30px;flex:none}
+.mast b{font-weight:650;letter-spacing:-.01em;font-size:1.05rem}
+.mast b i{font-style:normal;color:var(--gold)}
+
+.eyebrow{
+  font-family:var(--mono); font-size:.72rem; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--gold-dim); margin:0 0 1.1rem; display:flex; align-items:center; gap:.7rem; flex-wrap:wrap;
+}
+.tag--dev{
+  font-family:var(--mono); font-size:.63rem; letter-spacing:.1em; text-transform:uppercase;
+  padding:.2rem .5rem; border-radius:999px; color:var(--ember);
+  background:rgba(217,119,87,.13); border:1px solid rgba(217,119,87,.32);
+}
+h1{
+  font-size:clamp(2.1rem,6.2vw,3.6rem); line-height:1.06; letter-spacing:-.033em;
+  font-weight:660; margin:0 0 1.15rem; text-wrap:balance;
+}
+.lede{
+  font-size:clamp(1.03rem,2.2vw,1.2rem); color:#c3ccd7; max-width:46ch;
+  margin:0 0 1.6rem; text-wrap:pretty;
+}
+
+/* ---- the flow ---- */
+.flow{
+  display:flex; align-items:center; gap:.55rem; flex-wrap:wrap;
+  font-family:var(--mono); font-size:.82rem; margin:0 0 2.75rem;
+}
+.flow span{padding:.4rem .75rem;border:1px solid var(--border);border-radius:7px;background:var(--raised)}
+.flow span.gate{border-color:var(--gold-low);color:var(--gold);background:rgba(227,179,65,.07)}
+.flow em{font-style:normal;color:var(--muted)}
+
+h2{
+  font-family:var(--mono); font-size:.72rem; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--muted); font-weight:500; margin:0 0 1.1rem;
+}
+.grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(15.5rem,1fr));margin-bottom:2.75rem}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:1.35rem 1.3rem}
+.card h3{margin:0 0 .5rem;font-size:1rem;font-weight:620;letter-spacing:-.012em}
+.card p{margin:0;color:var(--muted);font-size:.91rem;text-wrap:pretty}
+
+.note{
+  background:var(--raised); border:1px solid var(--border); border-left:2px solid var(--gold-low);
+  border-radius:10px; padding:1.15rem 1.3rem; margin-bottom:2.5rem;
+}
+.note p{margin:0;color:#b8c2ce;font-size:.93rem;text-wrap:pretty}
+.note strong{color:var(--ink);font-weight:620}
+
+.actions{display:flex;gap:.75rem;flex-wrap:wrap}
+.btn{
+  display:inline-flex;align-items:center;gap:.45rem;padding:.65rem 1.15rem;border-radius:8px;
+  border:1px solid var(--border);background:var(--raised);color:var(--ink);
+  text-decoration:none;font-size:.92rem;font-weight:560;
+  transition:border-color .16s ease,background .16s ease;
+}
+.btn:hover,.btn:focus-visible{border-color:var(--gold-dim);background:var(--soft)}
+.btn:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.btn--primary{background:rgba(227,179,65,.12);border-color:var(--gold-low);color:var(--gold)}
+.btn--primary:hover,.btn--primary:focus-visible{background:rgba(227,179,65,.19);border-color:var(--gold-dim)}
+
+footer{
+  margin-top:clamp(3.5rem,9vw,5.5rem); padding-top:1.5rem; border-top:1px solid var(--border);
+  display:flex; flex-wrap:wrap; gap:.6rem 1.4rem; align-items:center;
+  font-size:.83rem; color:var(--muted);
+}
+footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid transparent}
+footer a:hover,footer a:focus-visible{color:var(--ink);border-bottom-color:var(--gold-dim)}
+footer .sep{margin-left:auto}
+@media (max-width:34rem){footer .sep{margin-left:0;width:100%}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="mast">
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+      <rect width="32" height="32" rx="7" fill="#0e141c" stroke="#22303f"></rect>
+      <path d="M12 11l-4 5 4 5" stroke="#e3b341" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+      <path d="M20 11l4 5-4 5" stroke="#e3b341" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+    <b>arbiter<i>IDE</i></b>
+  </header>
+
+  <main>
+    <p class="eyebrow">An arbiterForge project <span class="tag--dev">In development</span></p>
+    <h1>The governed agentic IDE.</h1>
+    <p class="lede">
+      You state the intent. The agent does the work. Nothing reaches your default branch until
+      every gate has cleared — and you can read exactly which ones did.
+    </p>
+
+    <p class="flow">
+      <span>Intent</span><em>→</em>
+      <span class="gate">Gates</span><em>→</em>
+      <span>Verified pull request</span>
+    </p>
+
+    <h2>What it is</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Built on Eclipse Theia</h3>
+        <p>A real desktop IDE, not a chat window bolted to an editor. Open source foundations, familiar surface.</p>
+      </div>
+      <div class="card">
+        <h3>Governed by codeArbiter</h3>
+        <p>The same gates, reviewer fleet, and audit trail that already run in the terminal — wired into the editor.</p>
+      </div>
+      <div class="card">
+        <h3>A PR you can defend</h3>
+        <p>Every change arrives with the tests, reviews, and decisions that let it through, recorded rather than asserted.</p>
+      </div>
+    </div>
+
+    <div class="note">
+      <p>
+        <strong>Not yet available.</strong> arbiterIDE is in active development and there is no
+        download or preview build to sign up for. If you want the governance model today, it
+        already ships for Claude Code, Codex, and Pi.
+      </p>
+    </div>
+
+    <div class="actions">
+      <a class="btn btn--primary" href="https://codearbiter.dev/">Use codeArbiter today <span aria-hidden="true">→</span></a>
+      <a class="btn" href="https://github.com/arbiterForge">Follow on GitHub</a>
+    </div>
+  </main>
+
+  <footer>
+    <a href="https://arbiterforge.com/">arbiterForge</a>
+    <a href="https://codearbiter.dev/">codeArbiter</a>
+    <span class="sep">&copy; arbiterForge</span>
+  </footer>
+
+</div>
+</body>
+</html>
